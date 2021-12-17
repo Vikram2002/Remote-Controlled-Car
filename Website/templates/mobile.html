@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>RC Car - desktop</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		function refresh(node) {
+		   var times = 50; // gap in Milli Seconds;
+
+		   (function startRefresh()
+		   {
+		      var address;
+		      if(node.src.indexOf('?')>-1)
+		       address = node.src.split('?')[0];
+		      else 
+		       address = node.src;
+		      node.src = address+"?time="+new Date().getTime();
+
+		      setTimeout(startRefresh,times);
+		   })();
+		}
+
+		window.onload = function() {
+		  var node = document.getElementById('img');
+		  refresh(node);
+		  // you can refresh as many images you want just repeat above steps
+		}
+
+		$(document).ready(function () {
+		    var isTouchDevice = 'ontouchstart' in document.documentElement;
+		    
+		    $("#touchSensitive").mousedown(function(event) {
+		        if (isTouchDevice == false) {   
+		            pushed();   
+		        }
+		    });
+		    $("#touchSensitive").mouseup(function(event) {
+		        if (isTouchDevice == false) {   
+		            released(); 
+		        }
+		    });
+		    $('#touchSensitive').on('touchstart', function(){
+		        if (isTouchDevice)  {   
+		            pushed();   
+		        }
+		    });
+		    $('#touchSensitive').on('touchend', function(){
+		        if (isTouchDevice)  {   
+		            released(); 
+		        }
+		    });
+		});
+
+		var elem = document.documentElement;
+		/* View in fullscreen */
+		function openFullscreen() {
+		  if (elem.requestFullscreen) {
+		    elem.requestFullscreen();
+		  } else if (elem.mozRequestFullScreen) { /* Firefox */
+		    elem.mozRequestFullScreen();
+		  } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+		    elem.webkitRequestFullscreen();
+		  } else if (elem.msRequestFullscreen) { /* IE/Edge */
+		    elem.msRequestFullscreen();
+		  }
+		}
+
+		/* Close fullscreen */
+		function closeFullscreen() {
+		  if (document.exitFullscreen) {
+		    document.exitFullscreen();
+		  } else if (document.mozCancelFullScreen) { /* Firefox */
+		    document.mozCancelFullScreen();
+		  } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+		    document.webkitExitFullscreen();
+		  } else if (document.msExitFullscreen) { /* IE/Edge */
+		    document.msExitFullscreen();
+		  }
+		}
+
+		function Fullscreen(option) {
+			if (option==0) {
+				openFullscreen()
+				document.getElementById("screen").setAttribute('onclick',"Fullscreen(1)")
+			}
+			else {
+				closeFullscreen()
+				document.getElementById("screen").setAttribute('onclick',"Fullscreen(0)")
+			}
+		}
+	</script>
+	<script type="text/javascript">
+		function toggle() {
+			var x = document.getElementById("Live").className;
+			var y = document.getElementById("Detection").className;
+			if (x=="hidden") {
+				document.getElementById("Live").className = "displayed";
+				document.getElementById("Detection").className = "hidden";
+			}
+			else {
+				document.getElementById("Live").className = "hidden";
+				document.getElementById("Detection").className = "displayed";
+			}
+		}
+
+		function pass_values(pass_to_python) {
+
+            $.ajax(
+            {
+                type:'POST',
+                contentType:'application/json;charset-utf-08',
+                dataType:'json',
+                url:'http://192.168.1.186:5000/pass_val?value='+pass_to_python ,
+                success:function (data) {
+                    var reply=data.reply;
+                    if (reply=="success")
+                    {
+                        return;
+                    }
+                    else
+                        {
+                        alert("some error ocured in session agent")
+                        }
+
+                	}
+            	}
+        	);
+		}
+
+		var value = '';
+		function getArrow(key) {
+		    if (key == 87){
+		    	value = 'Moving Forward';
+		    }
+		    if (key == 83){
+		    	value = 'Moving Backward';
+		    }
+		    if (key == 65){
+		    	value = 'Turning Left';
+		    }
+		    if (key == 68){
+		    	value = 'Turning Right';
+		    }
+		    if (key == 38){
+		    	value = 'Camera Up';
+		    }
+		    if (key == 40){
+		    	value = 'Camera Down';
+		    }
+		    if (key == 37){
+		    	value = 'Camera Left';
+		    }
+		    if (key == 39){
+		    	value = 'Camera Right';
+		    }
+		    pass_values(value);
+		}
+		function release() {
+			value = 'Idle';
+			pass_values(value);
+		}
+	</script>
+	<style type="text/css">
+		body {
+			background-color: black;
+		}
+		content {
+			display: block;
+			margin: 2%;
+		}
+		section {
+			display: block;
+		}
+		.options {
+			background-repeat: no-repeat;
+			background-position: center;
+			display: inline;
+			padding: 2%;
+			border-radius: 50%;
+		}
+		#screen {
+			background-image: url("{{ url_for('static', filename = 'fullscreen4.jpg') }}");
+			background-size: 100%;
+		}
+		#toggle {
+			background-image: url("{{ url_for('static', filename = 'camera2.jpg') }}");
+			background-size: 100%;
+			float: right;
+		}
+		#carControls {
+			display: inline-grid;
+			grid-template-columns: 30% 30% 30%;
+			grid-gap: 10% 2%;
+			width: 25%;
+		}
+		#carControls button {
+			margin: 1%;
+			padding: 5%;
+			font-size: 70%;
+		}
+		figure {
+			display: inline-block;
+			width: 30%;
+			margin: 0 8%;
+		}
+		figure img {
+			border: 15px double blue;
+			width: 100%;
+		}
+		figcaption {
+			color: blue;
+		}
+		.hidden {
+			display: none;
+		}
+		.false {
+			color: transparent;
+			background-color: transparent;
+			border-color: transparent;
+		}
+		#camControls {
+			display: inline-grid;
+			grid-template-columns: 30% 30% 30%;
+			grid-gap: 10% 2%;
+			width: 25%;
+		}
+		#camControls button {
+			margin: 1%;
+			padding: 5%;
+			font-size: 70%;
+		}
+		button {
+			border: 3px solid lightblue;
+		}
+		button:active {
+			background-color: grey;
+		}
+		.noselect {
+			touch-action: manipulation;
+		    -webkit-touch-callout: none; /* iOS Safari */
+		    -webkit-user-select: none; /* Safari */
+		    -khtml-user-select: none; /* Konqueror HTML */
+		    -moz-user-select: none; /* Old versions of Firefox */
+		    -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+		}
+	</style>
+
+</head>
+<body>
+	<content>
+		<button id="screen" onclick="Fullscreen(0)" class = "options"></button>
+		<button id="toggle" onclick="toggle()" class="options"></button>
+
+		<section>
+			<nav id="carControls">
+				<button class="false noselect"></button>
+				<button ontouchstart="getArrow(87)" ontouchend="release()" class="noselect">Go Forward</button>
+				<button class="false noselect"></button>
+				<button ontouchstart="getArrow(65)" ontouchend="release()" class="noselect">Turn Left</button>
+				<button ontouchstart="getArrow(83)" ontouchend="release()" class="noselect">Go Back</button>
+				<button ontouchstart="getArrow(68)" ontouchend="release()" class="noselect">Turn Right</button>
+			</nav>
+
+			<figure id="Live" class="hidden">
+				<figcaption>Live Feed</figcaption>
+				<img src="http://192.168.1.186:8000/stream.mjpg">
+			</figure>
+
+			<figure id="Detection" class="displayed">
+				<figcaption>Object Detection and Face Recognition</figcaption>
+				<img id="" src="{{ url_for('static', filename = 'output.jpg') }}">
+			</figure>
+
+			<nav id="camControls">
+				<button class="false noselect"></button>
+				<button ontouchstart="getArrow(38)" ontouchend="release()" class="noselect">Look Up</button>
+				<button class="false noselect"></button>
+				<button ontouchstart="getArrow(39)" ontouchend="release()" class="noselect">Look Right</button>
+				<button ontouchstart="getArrow(40)" ontouchend="release()" class="noselect">Look Down</button>
+				<button ontouchstart="getArrow(37)" ontouchend="release()" class="noselect">Look Left</button>
+			</nav>
+		</section>
+	</content>
+</body>
+</html>

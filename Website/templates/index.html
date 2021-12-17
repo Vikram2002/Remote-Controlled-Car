@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>RC Car</title>
+	<style type="text/css">
+		body {
+			background-image: url("{{ url_for('static', filename = 'matrix_background.jpg') }}");
+		}
+		header {
+			background-color: lightblue;
+			margin: 0px 400px;
+			border-radius: 50px;
+		}
+		h5 {
+			font-size: 60px;
+			text-align: center;
+			padding: 20px;
+			color: blue;
+		}
+		ul {
+			list-style-type: none;
+			text-align: center;
+		}
+		li {
+			display: inline-block;
+			background-color: black;
+			padding: 20px 20px;
+			margin: 100px;
+			text-align: center;
+			font-size: 30px;
+			border: 5px solid lightblue;
+		}
+		a {
+			color: blue;
+			text-decoration: none;
+		}
+		a:hover {
+			color: lightblue;
+		}
+	</style>
+</head>
+<body>
+	<header><h5>Raspberry Pi RC Car</h5></header>
+	<content>
+		<ul>
+			<li><a href="desktop">Desktop Version</a></li>
+			<li><a href="mobile">Mobile Version</a></li>
+		</ul>
+	</content>
+</body>
+</html>

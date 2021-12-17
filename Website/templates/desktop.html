@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>RC Car - desktop</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		function refresh(node)
+		{
+		   var times = 50; // gap in Milli Seconds;
+
+		   (function startRefresh()
+		   {
+		      var address;
+		      if(node.src.indexOf('?')>-1)
+		       address = node.src.split('?')[0];
+		      else 
+		       address = node.src;
+		      node.src = address+"?time="+new Date().getTime();
+
+		      setTimeout(startRefresh,times);
+		   })();
+
+		}
+
+		window.onload = function()
+		{
+		  var node = document.getElementById('img');
+		  refresh(node);
+		  // you can refresh as many images you want just repeat above steps
+		}
+
+		function pass_values(pass_to_python) {
+
+            $.ajax(
+            {
+                type:'POST',
+                contentType:'application/json;charset-utf-08',
+                dataType:'json',
+                url:'http://192.168.1.186:5000/pass_val?value='+pass_to_python ,
+                success:function (data) {
+                    var reply=data.reply;
+                    if (reply=="success")
+                    {
+                        return;
+                    }
+                    else
+                        {
+                        alert("some error ocured in session agent")
+                        }
+
+                	}
+            	}
+        	);
+		}
+
+		var value = '';
+		function keyHandler(key) {
+		    this.onkeydown = null;
+		    if (key.keyCode == 87){
+		    	value = 'Moving Forward';
+		    }
+		    if (key.keyCode == 83){
+		    	value = 'Moving Backward';
+		    }
+		    if (key.keyCode == 65){
+		    	value = 'Turning Left';
+		    }
+		    if (key.keyCode == 68){
+		    	value = 'Turning Right';
+		    }
+		    if (key.keyCode == 38){
+		    	value = 'Camera Up';
+		    }
+		    if (key.keyCode == 40){
+		    	value = 'Camera Down';
+		    }
+		    if (key.keyCode == 37){
+		    	value = 'Camera Left';
+		    }
+		    if (key.keyCode == 39){
+		    	value = 'Camera Right';
+		    }
+		    document.getElementById('direction').innerHTML = value;
+		    pass_values(value);
+		}
+
+		window.onkeydown = keyHandler;
+
+		window.onkeyup = function() {
+		    this.onkeydown = keyHandler;
+		    value = 'Idle';
+		    document.getElementById('direction').innerHTML = value;
+		    pass_values(value);
+		};
+	</script>
+
+	<style type="text/css">
+		body {
+			background-color: black;
+		}
+		header {
+			display: block;
+		}
+		h3 {
+			text-align: center;
+			color: lightblue;
+			font-size: 35px;
+		}
+		content {
+
+		}
+		.images {
+			flex-direction: row;
+			display: flex;
+		}
+		figure {
+			margin: auto;
+			text-align: center;
+			width: 80%;
+		}
+		img {
+			width: inherit;
+			border: 10px double blue;
+		}
+		figcaption {
+			color: lightblue;
+			font-size: 150%;
+		}
+		div {
+			width: 30%;
+			text-align: center;
+			margin: 50px 35%;
+			padding: 10px;
+			border: 10px solid white
+		}
+		#direction {
+			color: white;
+			font-size: 150%;
+		}
+	</style>
+</head>
+<body>
+	<header><h3>Control Car with W, A, S, D and Camera with Arrow Keys</h3></header>
+	<content>
+		<section class="images">
+			<figure>
+				<img src="http://192.168.1.186:8000/stream.mjpg">
+				<figcaption>Live Feed</figcaption>
+			</figure>
+			<figure>
+				<img id="", src="{{ url_for('static', filename = 'output.jpg') }}">
+				<figcaption>Object Detection and Face Recognition</figcaption>
+			</figure>
+		</section>
+		<div>
+			<h3 id='direction'>Moving Forward</h3>
+	</content>
+</body>
+</html>
